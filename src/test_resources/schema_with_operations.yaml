@@ -1,0 +1,548 @@
+openapi: 3.0.3
+info:
+  title: Fictional Library User Management Service API
+  version: 1.0.0
+  description: |
+    A RESTful API for managing library user records and their loan information.
+servers:
+  - url: https://api.fictionallibrary.example.com/v1
+    description: Production server
+
+paths:
+  /users:
+    get:
+      summary: List users
+      description: Retrieve all users with pagination.
+      operationId: listUsers
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/pageSize'
+        - name: membershipType
+          in: query
+          description: Filter by membership type
+          schema:
+            type: string
+            enum: [REGULAR, PREMIUM, STUDENT]
+      responses:
+        '200':
+          description: A paginated list of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      summary: Create a new user
+      description: Register a new library user.
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /users/{userId}:
+    parameters:
+      - $ref: '#/components/parameters/userId'
+    get:
+      summary: Get user details
+      description: Retrieve detailed information for a specific user.
+      operationId: getUserById
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      summary: Replace user
+      description: Replace a user's entire record.
+      operationId: replaceUserById
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Updated user record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: Update user fields
+      description: Partially update a user's information.
+      operationId: updateUserById
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPatch'
+      responses:
+        '200':
+          description: Updated user record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Delete user
+      description: Soft-delete a user record.
+      operationId: deleteUserById
+      responses:
+        '204':
+          description: User deleted (no content)
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /users/{userId}/loans:
+    parameters:
+      - $ref: '#/components/parameters/userId'
+    get:
+      summary: List user loans
+      description: Retrieve current loans for a specific user.
+      operationId: listUserLoans
+      responses:
+        '200':
+          description: List of loans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Loan'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /users/search:
+    post:
+      summary: Search users
+      description: Search for users by multiple criteria.
+      operationId: searchUsers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Partial match on user name
+                email:
+                  type: string
+                  format: email
+                joinedAfter:
+                  type: string
+                  format: date
+                  description: Users who joined after this date
+                membershipType:
+                  type: string
+                  enum: [REGULAR, PREMIUM, STUDENT]
+              example:
+                name: "Smith"
+                joinedAfter: "2024-01-01"
+                membershipType: "STUDENT"
+      responses:
+        '200':
+          description: Matching users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /users/bulk:
+    post:
+      summary: Bulk user import
+      description: Upload a CSV file to register multiple users at once.
+      operationId: bulkImportUsers
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'CSV file (headers: name,email,membershipType,registeredAt)'
+      responses:
+        '202':
+          description: Bulk import accepted
+          headers:
+            Location:
+              description: URL to check bulk job status
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /users/bulk/{jobId}:
+    parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Bulk import job identifier
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Authorization Header
+      - name: Application-Version
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Application version
+      - name: Something-Id
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Identifier of something
+    get:
+      summary: Get bulk job status
+      description: Retrieve the status of a bulk import job.
+      operationId: getBulkJobStatus
+      responses:
+        '200':
+          description: Bulk job status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobStatus'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Page number (starting at 1)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    pageSize:
+      name: pageSize
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    userId:
+      name: userId
+      in: path
+      required: true
+      description: Unique user identifier (UUID)
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Bad request due to invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication required or failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Insufficient permissions to access resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Conflict with current state of the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+        message:
+          type: string
+          description: Error message detailing the cause
+      required:
+        - code
+        - message
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        membershipType:
+          type: string
+          enum: [REGULAR, PREMIUM, STUDENT]
+        registeredAt:
+          type: string
+          format: date-time
+        address:
+          $ref: '#/components/schemas/Address'
+      required:
+        - id
+        - name
+        - email
+        - membershipType
+        - registeredAt
+
+    Address:
+      type: object
+      properties:
+        postalCode:
+          type: string
+        street:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+      required:
+        - street
+        - city
+        - country
+
+    UserCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        membershipType:
+          type: string
+          enum: [REGULAR, PREMIUM, STUDENT]
+        address:
+          $ref: '#/components/schemas/Address'
+      required:
+        - name
+        - email
+        - membershipType
+
+    UserUpdate:
+      allOf:
+        - $ref: '#/components/schemas/UserCreate'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+          required:
+            - id
+
+    UserPatch:
+      type: object
+      description: Schema for partial updates – include only fields to change
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        membershipType:
+          type: string
+          enum: [REGULAR, PREMIUM, STUDENT]
+        address:
+          $ref: '#/components/schemas/Address'
+
+    UserList:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+
+    UserPage:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        items:
+          $ref: '#/components/schemas/UserList'
+      required:
+        - total
+        - page
+        - pageSize
+        - items
+
+    Loan:
+      type: object
+      properties:
+        loanId:
+          type: string
+          format: uuid
+        book:
+          $ref: '#/components/schemas/Book'
+        borrowedAt:
+          type: string
+          format: date-time
+        dueAt:
+          type: string
+          format: date-time
+      required:
+        - loanId
+        - book
+        - borrowedAt
+        - dueAt
+
+    Book:
+      type: object
+      properties:
+        isbn:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+      required:
+        - isbn
+        - title
+        - author
+
+    BulkJobStatus:
+      type: object
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+        processed:
+          type: integer
+        total:
+          type: integer
+      required:
+        - jobId
+        - status
+        - processed
+        - total
+
+    # this is dummy schema to check name confliction
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+
+    # this is dummy schema to check hyphen replacement
+    schema-Something:
+      type: object
+      properties:
+        id:
+          type: string

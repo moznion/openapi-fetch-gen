@@ -34,6 +34,7 @@ Options:
   -V, --version        output the version number
   -i, --input <path>   path to input OpenAPI TypeScript definition file
   -o, --output <path>  path to output generated client file (default: "./client.ts")
+  --use-operation-id   use operationId from OpenAPI schema for method names instead of generating from path (default: false)
   -h, --help           display help for command
 ```
 
@@ -247,4 +248,3 @@ $ pnpm ship
 ## License
 
 MIT
-
