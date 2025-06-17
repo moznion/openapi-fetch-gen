@@ -52,7 +52,7 @@
     "ts-morph": "^26.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.0.0",
     "@types/node": "^22.14.1",
     "@types/tmp": "^0.2.6",
     "openapi-fetch": "^0.14.0",
