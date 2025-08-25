@@ -25,6 +25,7 @@ export class Client<HT extends Record<string, string>> {
   }) {
     return await this.client.GET("/users", {
       params,
+      parseAs: "blob",
     });
   }
 
@@ -44,6 +45,7 @@ export class Client<HT extends Record<string, string>> {
   }) {
     return await this.client.POST("/users", {
       body,
+      parseAs: "blob",
     });
   }
 
@@ -53,6 +55,7 @@ export class Client<HT extends Record<string, string>> {
   async getUserDetails(params: { path: { userId: string } }) {
     return await this.client.GET("/users/{userId}", {
       params,
+      parseAs: "blob",
     });
   }
 
@@ -76,6 +79,7 @@ export class Client<HT extends Record<string, string>> {
     return await this.client.PUT("/users/{userId}", {
       params,
       body,
+      parseAs: "blob",
     });
   }
 
@@ -108,6 +112,7 @@ export class Client<HT extends Record<string, string>> {
     return await this.client.PATCH("/users/{userId}", {
       params,
       body,
+      parseAs: "blob",
     });
   }
 
@@ -117,6 +122,7 @@ export class Client<HT extends Record<string, string>> {
   async listUserLoans(params: { path: { userId: string } }) {
     return await this.client.GET("/users/{userId}/loans", {
       params,
+      parseAs: "blob",
     });
   }
 
@@ -131,6 +137,7 @@ export class Client<HT extends Record<string, string>> {
   }) {
     return await this.client.POST("/users/search", {
       body,
+      parseAs: "blob",
     });
   }
 
@@ -233,6 +240,7 @@ export class Client<HT extends Record<string, string>> {
           "Something-Id": string;
         },
       },
+      parseAs: "blob",
     });
   }
 }
