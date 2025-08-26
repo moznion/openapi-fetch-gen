@@ -54,6 +54,8 @@ For example, if the option value is `'{"application/pdf": "blob"}'`, the generat
 
 Here, the difference is that `parseAs: "blob"` has been added.
 
+If a single endpoint declares multiple return content types, this function prioritizes the first matching `parseAs` parameter based on the order of the declarations.
+
 ### Example
 
 Please refer to the [examples](./examples/).
