@@ -28,6 +28,11 @@ program
     "use operationId from OpenAPI schema for method names instead of generating from path",
     false,
   )
+  .option(
+    "--parse-as-mapping <json-string>",
+    "a mapping of response content types to their corresponding `parseAs` fetch options in the openapi-ts library",
+    "{}",
+  )
   .parse(process.argv);
 
 const options = program.opts();
@@ -38,13 +43,17 @@ try {
   const inputPath = path.resolve(options["input"]);
   const outputPath = path.resolve(options["output"]);
   const useOperationId = options["useOperationId"] || false;
+  const parseAsMapping = JSON.parse(options["parseAsMapping"]) || {};
 
   if (!fs.existsSync(inputPath)) {
     console.error(`Error: Input file not found: ${inputPath}`);
     process.exit(1);
   }
 
-  const clientCode = generateClient(inputPath, { useOperationId });
+  const clientCode = generateClient(inputPath, {
+    useOperationId,
+    parseAsMapping,
+  });
 
   fs.writeFileSync(outputPath, clientCode);
 

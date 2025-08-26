@@ -31,12 +31,30 @@ npx openapi-fetch-gen --input ./schema.d.ts --output ./client.ts
 Options:
 
 ```
-  -V, --version        output the version number
-  -i, --input <path>   path to input OpenAPI TypeScript definition file
-  -o, --output <path>  path to output generated client file (default: "./client.ts")
-  --use-operation-id   use operationId from OpenAPI schema for method names instead of generating from path (default: false)
-  -h, --help           display help for command
+  -V, --version                     output the version number
+  -i, --input <path>                path to input OpenAPI TypeScript definition file
+  -o, --output <path>               path to output generated client file (default: "./client.ts")
+  --use-operation-id                use operationId from OpenAPI schema for method names instead of generating from path (default: false)
+  --parse-as-mapping <json-string>  a mapping of response content types to their corresponding `parseAs` fetch options in the openapi-ts library (default: "{}")
+  -h, --help                        display help for command
 ```
+
+#### --parse-as-mapping option
+
+This option accepts a JSON string that maps response content types to their corresponding `parseAs` fetch options in the openapi-ts library (see also: https://openapi-ts.dev/openapi-fetch/api#fetch-options).
+
+For example, if the option value is `'{"application/pdf": "blob"}'`, the generated client will look like this:
+
+```typescript
+  return await this.client.GET("/pdf", {
+    params,
+    parseAs: "blob",
+  });
+```
+
+Here, the difference is that `parseAs: "blob"` has been added.
+
+If a single endpoint declares multiple return content types, this function prioritizes the first matching `parseAs` parameter based on the order of the declarations.
 
 ### Example
 
