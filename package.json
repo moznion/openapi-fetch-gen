@@ -1,6 +1,6 @@
 {
   "name": "@moznion/openapi-fetch-gen",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Generate TypeScript API client from OpenAPI TypeScript interface definitions created by openapi-typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
