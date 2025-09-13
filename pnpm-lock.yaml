@@ -10,7 +10,7 @@ importers:
     dependencies:
       commander:
         specifier: ^14.0.0
-        version: 14.0.0
+        version: 14.0.1
       tmp:
         specifier: ^0.2.3
         version: 0.2.5
@@ -455,8 +455,8 @@ packages:
   colorette@1.4.0:
     resolution: {integrity: sha512-Y2oEozpomLn7Q3HFP7dpww7AtMJplbM9lGZP6RDfHqmbeRjiwRg4n6VM6j4KLmRke85uWEI7JqF17f3pqdRA0g==}
 
-  commander@14.0.0:
-    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
+  commander@14.0.1:
+    resolution: {integrity: sha512-2JkV3gUZUVrbNA+1sjBOYLsMZ5cEEl8GTFP2a4AVz5hvasAMCQ1D2l2le/cX+pV4N6ZU17zjUahLpIXRrnWL8A==}
     engines: {node: '>=20'}
 
   debug@4.4.1:
@@ -1048,7 +1048,7 @@ snapshots:
 
   colorette@1.4.0: {}
 
-  commander@14.0.0: {}
+  commander@14.0.1: {}
 
   debug@4.4.1(supports-color@10.2.0):
     dependencies:
