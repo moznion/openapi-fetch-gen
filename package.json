@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
-    "@types/node": "^22.14.1",
+    "@types/node": "^24.0.0",
     "@types/tmp": "^0.2.6",
     "openapi-fetch": "^0.14.0",
     "openapi-typescript": "^7.6.1",
