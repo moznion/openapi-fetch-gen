@@ -13,7 +13,7 @@ importers:
         version: 14.0.2
       tmp:
         specifier: ^0.2.3
-        version: 0.2.5
+        version: 0.2.7
       ts-morph:
         specifier: ^27.0.0
         version: 27.0.2
@@ -656,8 +656,8 @@ packages:
     resolution: {integrity: sha512-PSkbLUoxOFRzJYjjxHJt9xro7D+iilgMX/C9lawzVuYiIdcihh9DXmVibBe8lmcFrRi/VzlPjBxbN7rH24q8/Q==}
     engines: {node: '>=14.0.0'}
 
-  tmp@0.2.5:
-    resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
+  tmp@0.2.7:
+    resolution: {integrity: sha512-e0votIpp4Uo2AJYSzVHV6xCcawuiez3DzqDAbrTc3YxBkplN6e+dM13ZeIcZnDg/QpSuU2zfZ3rzwY8ukEnaXw==}
     engines: {node: '>=14.14'}
 
   ts-morph@27.0.2:
@@ -1248,7 +1248,7 @@ snapshots:
 
   tinyrainbow@3.0.3: {}
 
-  tmp@0.2.5: {}
+  tmp@0.2.7: {}
 
   ts-morph@27.0.2:
     dependencies:
