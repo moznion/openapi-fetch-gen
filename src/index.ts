@@ -33,6 +33,10 @@ export function generateClient(
     compilerOptions: {
       target: ScriptTarget.Latest,
       module: ModuleKind.ESNext,
+      // TypeScript 6.x enables `strict` by default, which makes optional properties
+      // resolve with `| undefined` (e.g. `query?: never` becomes `undefined`) and
+      // changes the extracted type texts. Keep the pre-6.x non-strict resolution.
+      strictNullChecks: false,
     },
   });
   const schemaFile = project.addSourceFileAtPath(schemaFilePath);
@@ -148,7 +152,10 @@ function extractEndpointsInfo(
       if (!methodProperty) {
         continue;
       }
-      if (methodProperty.getTypeAtLocation(property).getText() === "never") {
+      // An unused method is declared as e.g. `get?: never`; its resolved type is
+      // `never` on TypeScript 5.x and `undefined` on TypeScript 6.x.
+      const methodPropertyType = methodProperty.getTypeAtLocation(property);
+      if (methodPropertyType.isNever() || methodPropertyType.isUndefined()) {
         continue;
       }
 
@@ -194,7 +201,9 @@ function extractEndpointsInfo(
           const propType = prop.getTypeAtLocation(decl);
           const text = propType.getText();
           const name = prop.getName();
-          if (text === "never") {
+          // An absent parameter is declared as e.g. `query?: never`; its resolved type
+          // is `never` on TypeScript 5.x and `undefined` on TypeScript 6.x.
+          if (propType.isNever() || propType.isUndefined()) {
             return { name, text: "" };
           }
           return { name, text };
@@ -261,7 +270,9 @@ function extractEndpointsInfo(
       const requestBodyProp = decl.getType().getProperty("requestBody");
       if (requestBodyProp) {
         const t = requestBodyProp.getTypeAtLocation(decl);
-        if (t.getText() !== "never") {
+        // An absent request body is declared as `requestBody?: never`; its resolved type
+        // is `never` on TypeScript 5.x and `undefined` on TypeScript 6.x.
+        if (!t.isNever() && !t.isUndefined()) {
           const contentProp = t.getPropertyOrThrow("content");
           const contentType = contentProp.getTypeAtLocation(decl);
           const contentTypeProps = contentType.getProperties();
