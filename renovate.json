@@ -2,5 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "openapi-typescript requires the TypeScript 5.x compiler API; keep the isolated tools/schema-gen environment on 5.x",
+      "matchFileNames": ["tools/schema-gen/**"],
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "^5.0.0"
+    }
   ]
 }

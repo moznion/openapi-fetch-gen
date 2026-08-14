@@ -1,0 +1,9 @@
+{
+  "name": "@moznion/openapi-fetch-gen-schema-gen",
+  "private": true,
+  "description": "Isolated environment for openapi-typescript, which requires the TypeScript 5.x compiler API and thus cannot share the root's TypeScript 7 installation",
+  "devDependencies": {
+    "openapi-typescript": "^7.6.1",
+    "typescript": "^5.8.3"
+  }
+}

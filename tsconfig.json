@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "types": ["node"],
     "esModuleInterop": true,
     "sourceMap": true,
     "inlineSources": true,
