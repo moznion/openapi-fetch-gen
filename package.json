@@ -57,7 +57,7 @@
     "@types/tmp": "^0.2.6",
     "openapi-fetch": "^0.17.0",
     "openapi-typescript": "^7.6.1",
-    "typescript": "^5.8.3",
+    "typescript": "^7.0.0",
     "vitest": "^4.0.0"
   },
   "peerDependencies": {
